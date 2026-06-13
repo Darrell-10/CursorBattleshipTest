@@ -23,7 +23,7 @@
   --text-mid:   #7fb3d3;
   --text-dim:   #3d6e8f;
 
-  --cell:       27px;
+  --cell:       40px;
   --cell-border:#1a3a58;
   --font-hud:   'Orbitron', 'Courier New', monospace;
   --font-ui:    'Rajdhani', 'Segoe UI', sans-serif;
@@ -318,7 +318,8 @@ kbd {
 }
 .tray-item:not(.placed):hover { border-color: var(--border-hi); background: var(--bg-light); }
 .tray-item:active { cursor: grabbing; }
-.tray-item.placed { opacity: 0.28; pointer-events: none; }
+/* Placed ships are dimmed in the tray but still draggable for repositioning */
+.tray-item.placed { opacity: 0.45; border-color: var(--border); }
 .tray-lbl {
   font-family: var(--font-hud);
   font-size: 10px;
@@ -382,8 +383,9 @@ kbd {
 .cell.ship {
   background: var(--sc, var(--accent));
   border-color: rgba(255,255,255,.15);
-  cursor: pointer;
+  cursor: grab;
 }
+.cell.ship:active { cursor: grabbing; }
 .cell.ship:hover { filter: brightness(1.25); }
 
 /* Drag-over previews */

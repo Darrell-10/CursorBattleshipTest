@@ -4,8 +4,8 @@
    ================================================================ */
 
 // ── Constants ─────────────────────────────────────────────────
-const GRID = 20;
-const CELL = 27; // pixels — must match CSS --cell
+const GRID = 10;
+const CELL = 40; // pixels — must match CSS --cell
 
 const FLEET = [
   { id: 'carrier',    name: 'Carrier',    size: 5, color: '#e53935' },
@@ -15,7 +15,7 @@ const FLEET = [
   { id: 'destroyer',  name: 'Destroyer',  size: 2, color: '#1e88e5' },
 ];
 
-const ROWS = 'ABCDEFGHIJKLMNOPQRST';
+const ROWS = 'ABCDEFGHIJ';
 
 // ── State ─────────────────────────────────────────────────────
 function mkPlayer() {
@@ -120,7 +120,7 @@ function boardCell(boardId, r, c) {
 }
 
 // ── Board builder ─────────────────────────────────────────────
-// Builds 20x20 board with row/col labels inside boardId element.
+// Builds 10x10 board with row/col labels inside boardId element.
 // onCellClick(r, c, cellEl) — fired on click
 // onCellOver(r, c)          — fired on dragover
 // onCellDrop(r, c)          — fired on drop
@@ -189,9 +189,16 @@ function renderSetupBoard() {
         cell.className = 'cell ship';
         cell.style.setProperty('--sc', f.color);
         cell.dataset.sid = id;
+        // Allow dragging from the board to reposition
+        cell.draggable = true;
+        cell.ondragstart = e => onBoardShipDragStart(e, id, r, c);
+        cell.ondragend   = () => { clearHighlight(); S.drag = null; };
       } else {
         cell.className = 'cell water';
         cell.style.removeProperty('--sc');
+        cell.draggable = false;
+        cell.ondragstart = null;
+        cell.ondragend   = null;
         delete cell.dataset.sid;
       }
     }
@@ -204,8 +211,9 @@ function renderTray() {
   tray.innerHTML = '';
 
   for (const ship of FLEET) {
+    const placed = p.placed.has(ship.id);
     const item = document.createElement('div');
-    item.className = 'tray-item' + (p.placed.has(ship.id) ? ' placed' : '');
+    item.className = 'tray-item' + (placed ? ' placed' : '');
     item.dataset.sid = ship.id;
 
     const lbl = document.createElement('div');
@@ -223,11 +231,10 @@ function renderTray() {
     }
     item.appendChild(seg);
 
-    if (!p.placed.has(ship.id)) {
-      item.draggable = true;
-      item.addEventListener('dragstart', e => onTrayDragStart(e, ship));
-      item.addEventListener('dragend', () => { clearHighlight(); S.drag = null; });
-    }
+    // All tray items are draggable — placed ones are re-draggable to reposition
+    item.draggable = true;
+    item.addEventListener('dragstart', e => onTrayDragStart(e, ship));
+    item.addEventListener('dragend', () => { clearHighlight(); S.drag = null; });
     tray.appendChild(item);
   }
 }
@@ -258,6 +265,32 @@ function onTrayDragStart(e, ship) {
 
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text/plain', ship.id);
+}
+
+// Drag initiated by grabbing a ship cell directly on the setup board
+function onBoardShipDragStart(e, id, r, c) {
+  const p = S.players[S.setupIdx];
+  const ship = p.ships[id];
+  if (!ship) return;
+
+  // Adopt the stored orientation of this ship
+  S.ori = ship.ori;
+  $('orient-badge').textContent = S.ori === 'H' ? '→ HORIZONTAL' : '↓ VERTICAL';
+  renderTray();
+
+  // Grab offset = index of the grabbed cell within the ship
+  const grabOff = S.ori === 'H' ? c - ship.col : r - ship.row;
+  S.drag = { shipId: id, grabOff: Math.max(0, grabOff) };
+
+  const ghost = makeDragGhost(FLEET.find(x => x.id === id));
+  document.body.appendChild(ghost);
+  const ox = S.ori === 'H' ? grabOff * (CELL + 2) + CELL / 2 : CELL / 2;
+  const oy = S.ori === 'H' ? CELL / 2 : grabOff * (CELL + 2) + CELL / 2;
+  e.dataTransfer.setDragImage(ghost, ox, oy);
+  requestAnimationFrame(() => { if (ghost.parentNode) document.body.removeChild(ghost); });
+
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', id);
 }
 
 function makeDragGhost(ship) {
@@ -322,7 +355,10 @@ function onSetupDrop(r, c) {
   S.drag = null;
 }
 
+// Click a placed ship cell to lift it back to the tray without re-placing
 function onSetupCellClick(r, c, cell) {
+  // Ignore if we just finished a drag (dragend fires before click sometimes)
+  if (S.drag) return;
   const id = cell.dataset.sid;
   if (!id) return;
   doRemove(S.setupIdx, id);
