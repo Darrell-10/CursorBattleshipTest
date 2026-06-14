@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Agent Skills Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="portfolio.css">
+</head>
+<body>
+
+  <!-- ── HEADER / HERO ────────────────────────────────────── -->
+  <header class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="container hero-inner">
+      <div class="badge-row">
+        <span class="badge">⚡ MCP Compatible</span>
+        <span class="badge">🤖 Agent-Ready</span>
+        <span class="badge">🌐 Open Source</span>
+      </div>
+      <h1 class="hero-title">AI Agent Skills<br><span class="accent">Portfolio</span></h1>
+      <p class="hero-sub">
+        A growing collection of tools and skills built for AI agents.<br>
+        Each skill is an MCP-compatible tool an agent can call to create
+        real, working software on demand.
+      </p>
+      <div class="hero-stats">
+        <div class="stat-chip"><span class="stat-num" id="skill-count">1</span><span class="stat-lbl">Skill</span></div>
+        <div class="stat-chip"><span class="stat-num">MCP</span><span class="stat-lbl">Protocol</span></div>
+        <div class="stat-chip"><span class="stat-num">Python</span><span class="stat-lbl">Runtime</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── HOW IT WORKS ─────────────────────────────────────── -->
+  <section class="how-section">
+    <div class="container">
+      <h2 class="section-title">How Skills Work</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3>Agent calls the tool</h3>
+          <p>An AI agent (in Cursor, Claude Desktop, or via API) calls a skill tool with a single parameter.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3>Skill generates the output</h3>
+          <p>The MCP server executes the skill — writing files, spinning up a game, building an app.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3>Ready to use instantly</h3>
+          <p>The result is immediately openable in a browser, run from the terminal, or deployed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SKILLS GRID ──────────────────────────────────────── -->
+  <main class="skills-section">
+    <div class="container">
+      <h2 class="section-title">Skills Library</h2>
+      <p class="section-sub">Click any card to view details, play the demo, or explore the source.</p>
+
+      <div class="skills-grid" id="skills-grid">
+
+        <!-- ── SKILL 01 — Battleship ──────────────────────── -->
+        <article class="skill-card" data-category="game">
+          <div class="card-header">
+            <div class="card-icon">⚓</div>
+            <div class="card-meta">
+              <span class="card-num">SKILL 01</span>
+              <span class="card-category">Game</span>
+            </div>
+          </div>
+          <h3 class="card-title">Battleship Game Generator</h3>
+          <p class="card-desc">
+            Generates a complete two-player Battleship web game — zero dependencies,
+            works in any browser. Features a 10×10 grid, drag-and-drop ship
+            placement with free repositioning, touch support for mobile, and
+            privacy screens for passing the device between turns.
+          </p>
+          <ul class="card-features">
+            <li>10 × 10 grid · 5 ships per player</li>
+            <li>Drag &amp; drop on desktop, touch drag on mobile</li>
+            <li>Freely reposition ships before confirming fleet</li>
+            <li>Hit / miss / sunk feedback · fleet health bars</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag tag-blue">MCP Tool</span>
+            <span class="tag tag-green">Python</span>
+            <span class="tag tag-purple">HTML / CSS / JS</span>
+            <span class="tag tag-orange">Mobile Ready</span>
+            <span class="tag tag-red">Two-Player</span>
+          </div>
+          <div class="card-actions">
+            <a href="battleship/index.html" class="btn btn-primary" target="_blank">
+              🎮 Play Demo
+            </a>
+            <a href="https://github.com/Darrell-10/CursorBattleshipTest/tree/main/battleship-skill"
+               class="btn btn-sec" target="_blank" rel="noopener">
+              &lt;/&gt; Source
+            </a>
+          </div>
+          <div class="card-tool-call">
+            <span class="tcl-label">Tool call</span>
+            <code class="tcl-code">create_battleship_game(output_dir="./my-game")</code>
+          </div>
+        </article>
+
+        <!-- ── PLACEHOLDER — More coming ─────────────────── -->
+        <article class="skill-card skill-card--ghost">
+          <div class="card-header">
+            <div class="card-icon ghost-icon">+</div>
+            <div class="card-meta">
+              <span class="card-num">SKILL 02</span>
+              <span class="card-category">Coming soon</span>
+            </div>
+          </div>
+          <h3 class="card-title ghost-title">Your next skill</h3>
+          <p class="card-desc ghost-text">
+            Add a new MCP tool to <code>battleship-skill/</code> and drop a
+            card here to showcase it.
+          </p>
+          <div class="card-tags">
+            <span class="tag tag-dim">MCP Tool</span>
+            <span class="tag tag-dim">Python</span>
+          </div>
+          <div class="card-actions">
+            <a href="https://github.com/Darrell-10/CursorBattleshipTest"
+               class="btn btn-sec" target="_blank" rel="noopener">
+              + Add a skill
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ── QUICK START ───────────────────────────────────────── -->
+  <section class="quickstart-section">
+    <div class="container">
+      <h2 class="section-title">Use Any Skill in 3 Steps</h2>
+      <div class="code-tabs">
+        <div class="tab-bar">
+          <button class="tab active" data-tab="cursor">Cursor</button>
+          <button class="tab" data-tab="python">Python</button>
+          <button class="tab" data-tab="openai">OpenAI API</button>
+        </div>
+
+        <div class="tab-panel active" id="tab-cursor">
+          <pre><code><span class="cm">// .cursor/mcp.json</span>
+{
+  <span class="ck">"mcpServers"</span>: {
+    <span class="ck">"battleship-skill"</span>: {
+      <span class="ck">"command"</span>: <span class="cv">"python"</span>,
+      <span class="ck">"args"</span>: [<span class="cv">"/path/to/battleship-skill/battleship_skill.py"</span>]
+    }
+  }
+}</code></pre>
+        </div>
+
+        <div class="tab-panel" id="tab-python">
+          <pre><code><span class="ck">from</span> battleship_skill <span class="ck">import</span> create_battleship_game
+
+result = create_battleship_game(<span class="cv">"./my-game"</span>)
+<span class="ck">print</span>(result)
+<span class="cm"># → Battleship game created successfully!</span>
+<span class="cm"># → Open: file:///path/to/my-game/index.html</span></code></pre>
+        </div>
+
+        <div class="tab-panel" id="tab-openai">
+          <pre><code><span class="ck">import</span> json, openai
+<span class="ck">from</span> pathlib <span class="ck">import</span> Path
+<span class="ck">from</span> battleship_skill <span class="ck">import</span> create_battleship_game
+
+schema = json.loads(Path(<span class="cv">"tool_schema.json"</span>).read_text())
+client = openai.OpenAI()
+
+response = client.chat.completions.create(
+    model=<span class="cv">"gpt-4o"</span>,
+    tools=[schema],
+    messages=[{<span class="cv">"role"</span>: <span class="cv">"user"</span>,
+               <span class="cv">"content"</span>: <span class="cv">"Create a Battleship game in ./output"</span>}],
+)
+args = json.loads(response.choices[<span class="cn">0</span>].message.tool_calls[<span class="cn">0</span>].function.arguments)
+<span class="ck">print</span>(create_battleship_game(**args))</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span class="footer-logo">⚡ Agent Skills</span>
+      <a href="https://github.com/Darrell-10/CursorBattleshipTest"
+         class="footer-link" target="_blank" rel="noopener">
+        View on GitHub →
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    // Tab switcher for Quick Start section
+    document.querySelectorAll('.tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.tab;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + id).classList.add('active');
+      });
+    });
+
+    // Update skill count badge dynamically
+    const realCards = document.querySelectorAll('.skill-card:not(.skill-card--ghost)').length;
+    document.getElementById('skill-count').textContent = realCards;
+  </script>
+
+</body>
+</html>
