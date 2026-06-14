@@ -1,0 +1,31 @@
+{
+  "mcpb_version": "0.4",
+  "name": "battleship-skill",
+  "display_name": "Battleship Game Generator",
+  "version": "1.0.0",
+  "tagline": "Generate a playable Battleship web game with one tool call",
+  "description": "Creates a complete two-player Battleship web game (index.html + style.css + game.js) in any local directory. Features a 10×10 grid, drag-and-drop ship placement with free repositioning, touch support for iOS and Android, privacy screens for passing the device between turns, and hit/miss/sunk visual feedback. No server, no install — open index.html in any browser to play.",
+  "author": "Darrell-10",
+  "license": "MIT",
+  "icon": "icon.png",
+  "server": {
+    "type": "python",
+    "entry_point": "battleship_skill.py",
+    "mcp_config": {
+      "command": "python3",
+      "args": ["${__dirname}/battleship_skill.py"]
+    }
+  },
+  "tools": [
+    {
+      "name": "create_battleship_game",
+      "title": "Create Battleship Game",
+      "description": "Creates a complete two-player Battleship web game in the specified output directory. Writes three files: index.html, style.css, and game.js. Open index.html in any modern browser on desktop or mobile to play immediately.",
+      "readOnlyHint": false,
+      "destructiveHint": false
+    }
+  ],
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"]
+  }
+}
