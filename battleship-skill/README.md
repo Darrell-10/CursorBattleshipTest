@@ -205,3 +205,91 @@ battleship-skill/
 
 - Python 3.10+
 - `mcp >= 1.9.0` (`pip install -r requirements.txt`)
+
+---
+
+## Deploying to the Claude Connectors Directory
+
+Anthropic's **Connectors Directory** is the official Claude marketplace. There are
+two submission paths — this skill fits the **Desktop Extension (MCPB)** path because
+it runs locally and writes files to disk (no internet hosting required).
+
+### What is MCPB?
+
+An `.mcpb` file is a ZIP archive containing your MCP server and a `manifest.json`.
+It enables **single-click installation** in Claude Desktop — similar to a browser
+extension. The `manifest.json` is already included in this repository.
+
+### Step 1 — Install the MCPB CLI
+
+```bash
+npm install -g @modelcontextprotocol/mcpb
+```
+
+### Step 2 — Validate the manifest
+
+```bash
+cd battleship-skill
+mcpb validate
+```
+
+Fix any reported issues before continuing.
+
+### Step 3 — Bundle the extension
+
+```bash
+mcpb pack
+# Produces: battleship-skill-1.0.0.mcpb
+```
+
+### Step 4 — Test locally before submitting
+
+Install your own bundle into Claude Desktop:
+
+```bash
+# macOS / Windows: double-click the .mcpb file in Finder / Explorer
+# Or drag it into Claude Desktop → Settings → Extensions
+```
+
+Claude Desktop will prompt for any configuration, launch the server, and
+make `create_battleship_game` available as a tool.
+
+### Step 5 — Submit to the Connectors Directory
+
+> **Requires a Claude Team or Enterprise account with directory management access
+> (organization Owners by default).**
+
+1. Go to **Claude.ai → Admin Settings → Connectors → Submit**
+2. Choose **Desktop Extension** as the connector type
+3. Upload your `.mcpb` file
+4. Fill in listing metadata (name, tagline, description, categories, docs URL,
+   privacy policy URL, support contact)
+5. Anthropic reviews for security and compatibility — typical turnaround is a few
+   business days
+
+Once approved, your extension appears in the directory and is eligible for
+**Suggested Connectors** — Claude can recommend it in-chat when the task is relevant.
+
+### Directory vs. custom connector
+
+| | Directory (submitted) | Custom (private URL) |
+|---|---|---|
+| Anthropic review | ✓ Required | ✗ None |
+| In-product discovery | ✓ Browse + Suggested | ✗ Manual URL only |
+| Available on | All Claude products | Your account only |
+| Required account tier | Team or Enterprise | Any |
+
+You can list the extension in the directory **and** share the raw `.mcpb` file
+privately — both work off the same server code.
+
+### Remote MCP alternative
+
+If you want the skill available in Claude.ai web (not just Desktop), you can
+host a **Remote MCP server** instead. This requires:
+
+- An internet-accessible HTTPS endpoint (e.g. on Railway, Fly.io, or any cloud)
+- Switching from `stdio` transport to HTTP/SSE in `battleship_skill.py`
+- OAuth 2.0 if authentication is needed
+
+The MCPB path covers Claude Desktop + Claude Code + Enterprise deployments without
+any hosting cost, which is the recommended starting point for a tool like this.
