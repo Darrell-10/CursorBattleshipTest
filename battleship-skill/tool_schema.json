@@ -1,0 +1,18 @@
+{
+  "type": "function",
+  "function": {
+    "name": "create_battleship_game",
+    "description": "Creates a complete two-player Battleship web game (10x10 grid, drag-and-drop placement, touch support for mobile) in the specified directory. Generates three files: index.html, style.css, game.js. The game can be opened directly in any modern browser or served with a local HTTP server.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "output_dir": {
+          "type": "string",
+          "description": "Absolute or relative path to the directory where the game files should be written. The directory will be created if it does not exist. Example: '/home/user/my-game' or './battleship-output'."
+        }
+      },
+      "required": ["output_dir"],
+      "additionalProperties": false
+    }
+  }
+}

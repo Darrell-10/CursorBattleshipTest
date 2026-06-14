@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Battleship</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ═══════════════════════════════════════════════════
+         INTRO SCREEN
+    ═══════════════════════════════════════════════════ -->
+    <section id="screen-intro" class="screen active">
+      <div class="ocean-ripple"></div>
+      <div class="intro-card">
+        <div class="anchor-icon">⚓</div>
+        <h1 class="logo-title">BATTLESHIP</h1>
+        <p class="logo-sub">Two-Player Naval Combat &nbsp;·&nbsp; 10×10 Grid</p>
+        <ul class="rules-list">
+          <li>Each player secretly places <strong>5 ships</strong> on their board</li>
+          <li>Take turns firing at the enemy's grid</li>
+          <li>Sink all 5 enemy ships to win!</li>
+        </ul>
+        <button id="btn-start" class="btn btn-primary btn-xl">⚓ Begin Battle</button>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         TRANSITION / PRIVACY SCREEN
+    ═══════════════════════════════════════════════════ -->
+    <section id="screen-transition" class="screen">
+      <div class="transition-card">
+        <div id="tr-icon" class="tr-icon"></div>
+        <h2 id="tr-title" class="tr-title"></h2>
+        <p id="tr-msg" class="tr-msg"></p>
+        <button id="btn-continue" class="btn btn-primary btn-xl">I'm Ready →</button>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SETUP SCREEN – drag-and-drop ship placement
+    ═══════════════════════════════════════════════════ -->
+    <section id="screen-setup" class="screen">
+      <div class="setup-bar">
+        <h2 id="setup-label" class="bar-title">Player 1 — Place Your Ships</h2>
+        <div class="setup-controls">
+          <span id="orient-badge" class="badge">→ HORIZONTAL</span>
+          <button id="btn-rotate" class="btn btn-sec">↺ Rotate <kbd>R</kbd></button>
+          <button id="btn-random" class="btn btn-sec">🎲 Random</button>
+          <button id="btn-clear"  class="btn btn-sec">✕ Clear</button>
+          <button id="btn-ready" class="btn btn-primary" disabled>Confirm Fleet ✓</button>
+        </div>
+      </div>
+      <div class="setup-body">
+        <aside class="tray-panel">
+          <h3 class="panel-heading">YOUR FLEET</h3>
+          <div id="tray-ships"></div>
+          <p class="tray-tip">Drag ships onto the grid.<br>Drag from board to reposition.<br>Click a placed ship to remove it.</p>
+        </aside>
+        <div class="board-area">
+          <div id="setup-board" class="board-wrap"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         BATTLE SCREEN – click to target and fire
+    ═══════════════════════════════════════════════════ -->
+    <section id="screen-battle" class="screen">
+      <div class="battle-bar">
+        <h2 id="battle-label" class="bar-title">Player 1's Turn</h2>
+        <div id="battle-feedback" class="battle-feedback"></div>
+      </div>
+      <div class="battle-body">
+        <aside class="fleet-panel">
+          <h3 class="panel-heading">ENEMY FLEET</h3>
+          <div id="fleet-list"></div>
+          <div class="shot-tally">
+            <div id="tally-hits"   class="tally-hit">● 0 hits</div>
+            <div id="tally-misses" class="tally-miss">○ 0 misses</div>
+          </div>
+        </aside>
+        <div class="board-area">
+          <div id="battle-board" class="board-wrap"></div>
+        </div>
+        <aside class="action-panel">
+          <div class="target-display">
+            <span class="td-label">TARGET</span>
+            <span id="target-coord" class="td-coord">—</span>
+          </div>
+          <button id="btn-fire"    class="btn btn-fire"    disabled>🎯 FIRE!</button>
+          <button id="btn-endturn" class="btn btn-endturn hidden">End Turn →</button>
+          <div id="turn-result" class="turn-result"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         GAME OVER SCREEN
+    ═══════════════════════════════════════════════════ -->
+    <section id="screen-gameover" class="screen">
+      <div class="gameover-card">
+        <div class="trophy">🏆</div>
+        <h2 id="go-title" class="go-title"></h2>
+        <p  id="go-sub"   class="go-sub"></p>
+        <div id="go-stats" class="go-stats"></div>
+        <button id="btn-again" class="btn btn-primary btn-xl">Play Again</button>
+      </div>
+    </section>
+
+  </div><!-- #app -->
+  <script src="game.js"></script>
+</body>
+</html>
