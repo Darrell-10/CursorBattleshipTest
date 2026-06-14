@@ -591,3 +591,80 @@ kbd {
 ::-webkit-scrollbar              { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track        { background: var(--bg-deep); }
 ::-webkit-scrollbar-thumb        { background: var(--border); border-radius: 3px; }
+
+/* ── Mobile responsive ─────────────────────────────────────── */
+@media (max-width: 600px) {
+  :root { --cell: 30px; }
+
+  /* Top bars wrap to two lines on small screens */
+  .setup-bar, .battle-bar {
+    flex-wrap: wrap;
+    padding: 6px 8px;
+    gap: 5px;
+  }
+  .bar-title { font-size: 13px; width: 100%; }
+  .setup-controls { justify-content: flex-start; flex-wrap: wrap; }
+  .badge { font-size: 9px; padding: 3px 7px; }
+  .btn { font-size: 10px; padding: 7px 10px; }
+  .btn-xl { padding: 12px 28px; font-size: 13px; }
+
+  /* Setup: stack tray above board */
+  .setup-body {
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    gap: 8px;
+  }
+  .tray-panel {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-height: none;
+    height: auto;
+    gap: 6px;
+    overflow-x: auto;
+  }
+  .tray-panel .panel-heading { width: 100%; }
+  .tray-tip { display: none; }
+  .tray-item { flex: 0 0 auto; }
+  .seg { width: 16px; height: 16px; }
+
+  /* Battle: stack fleet + action panel below board */
+  .battle-body {
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    gap: 8px;
+  }
+  .fleet-panel {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-height: none;
+    gap: 8px;
+  }
+  .fleet-panel .panel-heading { width: 100%; }
+  .fleet-item { flex: 1 0 80px; }
+  .shot-tally { flex-direction: row; gap: 14px; border-top: none; padding-top: 0; margin-top: 0; }
+
+  .action-panel {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+  .target-display { flex: 1; padding: 8px; }
+  .td-coord { font-size: 22px; }
+  .btn-fire   { width: auto; flex: 0 0 auto; }
+  .btn-endturn { width: auto; flex: 0 0 auto; margin-top: 0; }
+  .turn-result { display: none; }
+
+  /* Transition + Game Over cards full-width */
+  .transition-card, .gameover-card {
+    padding: 32px 20px;
+    width: 100%;
+    max-width: 100%;
+  }
+  .go-title { font-size: 24px; }
+  .trophy   { font-size: 56px; }
+}

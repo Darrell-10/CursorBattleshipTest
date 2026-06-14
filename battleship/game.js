@@ -47,6 +47,8 @@ function freshState() {
 }
 
 let S = freshState();
+let tDrag = null;       // active touch-drag state (mobile)
+let suppressClick = false; // suppress board cell click after touch drag
 
 // ── Ship helpers ──────────────────────────────────────────────
 function shipCells(row, col, size, ori) {
@@ -193,6 +195,22 @@ function renderSetupBoard() {
         cell.draggable = true;
         cell.ondragstart = e => onBoardShipDragStart(e, id, r, c);
         cell.ondragend   = () => { clearHighlight(); S.drag = null; };
+        // Touch equivalent for mobile
+        cell.ontouchstart = e => {
+          const p2 = S.players[S.setupIdx];
+          const sh = p2.ships[id];
+          if (!sh) return;
+          S.ori = sh.ori;
+          $('orient-badge').textContent = S.ori === 'H' ? '→ HORIZONTAL' : '↓ VERTICAL';
+          renderTray();
+          const go = S.ori === 'H' ? c - sh.col : r - sh.row;
+          startTouchDrag(FLEET.find(x => x.id === id), Math.max(0, go), e.touches[0], () => {
+            doRemove(S.setupIdx, id);
+            renderSetupBoard();
+            renderTray();
+            $('btn-ready').disabled = S.players[S.setupIdx].placed.size < FLEET.length;
+          });
+        };
       } else {
         cell.className = 'cell water';
         cell.style.removeProperty('--sc');
@@ -235,6 +253,21 @@ function renderTray() {
     item.draggable = true;
     item.addEventListener('dragstart', e => onTrayDragStart(e, ship));
     item.addEventListener('dragend', () => { clearHighlight(); S.drag = null; });
+    // Touch equivalent for mobile
+    item.addEventListener('touchstart', e => {
+      const seg = item.querySelector('.seg-h, .seg-v');
+      let grabOff = 0;
+      if (seg) {
+        const touch = e.touches[0];
+        const rect  = seg.getBoundingClientRect();
+        const sz    = 22; // seg px + gap
+        grabOff = S.ori === 'H'
+          ? Math.floor((touch.clientX - rect.left) / sz)
+          : Math.floor((touch.clientY - rect.top)  / sz);
+        grabOff = Math.max(0, Math.min(ship.size - 1, grabOff));
+      }
+      startTouchDrag(ship, grabOff, e.touches[0], null);
+    }, { passive: true });
     tray.appendChild(item);
   }
 }
@@ -358,7 +391,7 @@ function onSetupDrop(r, c) {
 // Click a placed ship cell to lift it back to the tray without re-placing
 function onSetupCellClick(r, c, cell) {
   // Ignore if we just finished a drag (dragend fires before click sometimes)
-  if (S.drag) return;
+  if (S.drag || suppressClick) return;
   const id = cell.dataset.sid;
   if (!id) return;
   doRemove(S.setupIdx, id);
@@ -366,6 +399,97 @@ function onSetupCellClick(r, c, cell) {
   renderTray();
   $('btn-ready').disabled = S.players[S.setupIdx].placed.size < FLEET.length;
 }
+
+// ── Touch drag (mobile ship placement) ───────────────────────
+// Mirrors the HTML5 drag-and-drop system for touch screens.
+// tDrag holds pending/active touch drag state.
+// Global touchmove/touchend handlers are always registered but
+// do nothing unless tDrag is set.
+
+function startTouchDrag(ship, grabOff, startTouch, onTap) {
+  tDrag = {
+    ship, grabOff, onTap,
+    ghost:     null,
+    activated: false,
+    startX:    startTouch.clientX,
+    startY:    startTouch.clientY,
+  };
+  S.drag = { shipId: ship.id, grabOff };
+}
+
+document.addEventListener('touchmove', e => {
+  if (!tDrag || S.phase !== 'setup') return;
+  const touch = e.touches[0];
+  const dx = touch.clientX - tDrag.startX;
+  const dy = touch.clientY - tDrag.startY;
+
+  if (!tDrag.activated) {
+    if (Math.abs(dx) < 7 && Math.abs(dy) < 7) return;
+    tDrag.activated = true;
+    tDrag.ghost = makeDragGhost(tDrag.ship);
+    Object.assign(tDrag.ghost.style, {
+      position: 'fixed', zIndex: '9999',
+      pointerEvents: 'none', opacity: '0.85',
+      top: '-9999px', left: '-9999px',
+    });
+    document.body.appendChild(tDrag.ghost);
+  }
+
+  e.preventDefault();
+  const { grabOff } = tDrag;
+  const ox = S.ori === 'H' ? grabOff * (CELL + 2) + CELL / 2 : CELL / 2;
+  const oy = S.ori === 'H' ? CELL / 2 : grabOff * (CELL + 2) + CELL / 2;
+  tDrag.ghost.style.left = (touch.clientX - ox) + 'px';
+  tDrag.ghost.style.top  = (touch.clientY - oy) + 'px';
+
+  tDrag.ghost.style.visibility = 'hidden';
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  tDrag.ghost.style.visibility = '';
+
+  const cell = el && el.closest('.cell');
+  if (cell && cell.dataset.r !== undefined) {
+    onSetupDragOver(+cell.dataset.r, +cell.dataset.c);
+  } else {
+    clearHighlight();
+  }
+}, { passive: false });
+
+document.addEventListener('touchend', e => {
+  if (!tDrag || S.phase !== 'setup') return;
+  e.preventDefault();
+
+  if (!tDrag.activated) {
+    if (tDrag.onTap) tDrag.onTap();
+    S.drag = null; tDrag = null; clearHighlight();
+    return;
+  }
+
+  const touch = e.changedTouches[0];
+  if (tDrag.ghost) tDrag.ghost.style.visibility = 'hidden';
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  if (tDrag.ghost && tDrag.ghost.parentNode) document.body.removeChild(tDrag.ghost);
+  tDrag = null;
+
+  // Suppress the synthetic click the browser fires after touchend
+  suppressClick = true;
+  setTimeout(() => { suppressClick = false; }, 400);
+
+  const cell = el && el.closest('.cell');
+  if (cell && cell.dataset.r !== undefined) {
+    onSetupDrop(+cell.dataset.r, +cell.dataset.c);
+  } else {
+    clearHighlight();
+    S.drag = null;
+  }
+}, { passive: false });
+
+document.addEventListener('touchcancel', () => {
+  if (!tDrag) return;
+  if (tDrag.ghost && tDrag.ghost.parentNode) document.body.removeChild(tDrag.ghost);
+  clearHighlight();
+  S.drag = null;
+  tDrag = null;
+});
 
 // ── Show setup screen ─────────────────────────────────────────
 function showSetup(pi) {
